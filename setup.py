@@ -7,8 +7,8 @@ setup(
     description='Needed to be installed to use the GO pygo package which allows calling python functions from GO lang',
     author='Muhamad Azmy',
     author_email='muhamad.azmy@gmail.com',
-    url='https://github.com/muhamadazmy/pygo',  # use the URL to the github repo
-    download_url='https://github.com/peterldowns/mypackage/tarball/0.1',  # I'll explain this in a second
-    keywords=['pygo', 'golang', 'go'],  # arbitrary keywords
+    url='https://github.com/muhamadazmy/python-pygo',
+    download_url='https://github.com/muhamadazmy/python-pygo/tarball/0.1',
+    keywords=['pygo', 'golang', 'go'],
     classifiers=[],
 )
