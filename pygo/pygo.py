@@ -57,12 +57,13 @@ class Runner(object):
     def do_call(self, call):
         module = self.get_module()
         func_name = call['function']
-        args = call['kwargs']
+        args = call['args'] or []
+        kwargs = call['kwargs'] or {}
 
         result = {}
         try:
             func = getattr(module, func_name)
-            call_result = func(**args)
+            call_result = func(*args, **kwargs)
             result = {
                 'return': call_result
             }
