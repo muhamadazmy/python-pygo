@@ -23,6 +23,11 @@ def readlen(f, n):
 
     return buffer
 
+HANDSHAKE = {
+    'state': 'SUCCESS',
+    'version': 1.0
+}
+
 
 class Runner(object):
     def __init__(self, module):
@@ -76,6 +81,8 @@ class Runner(object):
         return result
 
     def run(self):
+        # send handshake
+        self.send_result(HANDSHAKE)
         while True:
             result = {'state': 'ERROR'}
             try:

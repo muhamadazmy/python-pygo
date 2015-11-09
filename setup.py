@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='pygo',
     packages=['pygo'],  # this must be the same as the name above
-    version='0.2',
+    version='0.2.1',
     description='Needed to be installed to use the GO pygo package which allows calling python functions from GO lang',
     author='Muhamad Azmy',
     author_email='muhamad.azmy@gmail.com',
