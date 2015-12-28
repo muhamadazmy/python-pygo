@@ -13,15 +13,20 @@ HEADER_SIZE = struct.calcsize(HEADER_FMT)
 
 
 def readlen(f, n):
-    buffer = ''
+    buffer = bytearray()
     while len(buffer) < n:
         data = f.read(n - len(buffer))
         if data == '':
             raise Exception('EOF')
 
-        buffer += data
+        buffer.extend(data)
 
     return buffer
+
+HANDSHAKE = {
+    'state': 'SUCCESS',
+    'version': 1.0
+}
 
 
 class Runner(object):
@@ -29,8 +34,8 @@ class Runner(object):
         self.module = module
 
         # open channel files
-        self.chan_in = os.fdopen(CHANNEL_IN, 'r')
-        self.chan_out = os.fdopen(CHANNEL_OUT, 'w')
+        self.chan_in = os.fdopen(CHANNEL_IN, 'rb')
+        self.chan_out = os.fdopen(CHANNEL_OUT, 'wb')
 
         self.mod = None
 
@@ -40,12 +45,12 @@ class Runner(object):
 
         data = readlen(self.chan_in, length)
 
-        return json.loads(data)
+        return json.loads(data.decode('utf-8'))
 
     def send_result(self, result):
         data = json.dumps(result)
         self.chan_out.write(struct.pack(HEADER_FMT, len(data)))
-        self.chan_out.write(data)
+        self.chan_out.write(data.encode())
         self.chan_out.flush()
 
     def get_module(self):
@@ -57,12 +62,13 @@ class Runner(object):
     def do_call(self, call):
         module = self.get_module()
         func_name = call['function']
-        args = call['kwargs']
+        args = call['args'] or []
+        kwargs = call['kwargs'] or {}
 
         result = {}
         try:
             func = getattr(module, func_name)
-            call_result = func(**args)
+            call_result = func(*args, **kwargs)
             result = {
                 'return': call_result
             }
@@ -75,6 +81,8 @@ class Runner(object):
         return result
 
     def run(self):
+        # send handshake
+        self.send_result(HANDSHAKE)
         while True:
             result = {'state': 'ERROR'}
             try:
